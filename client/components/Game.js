@@ -16,7 +16,7 @@ class Game extends Component {
     }
   }
 
-  initializeGame() {
+initializeBoard() {
     let game = []
 
     for (let i = 0; i < 5; i++) {
@@ -25,58 +25,55 @@ class Game extends Component {
         game[i][j] = {
           x: i,
           y: j,
-          cardName: undefined,
           isRed: false,
           isBlue: false,
           isAssassin: false,
           isNeutral: true,
           isRevealed: false
-
-
-      }
-      // getWords
-      // populate board
-      // assign card values -> randomly
-    }
-
-  }return game}
-
-  assignValues(game){
-    let assignedCards = []
-    let blue, red = 0
-      let ax = Math.floor(Math.random() * 5)
-      let ay = Math.floor(Math.random() * 5)
-      game[ax][ay].isAssassin = true
-
-
-
-    while (blue < 9){
-      let bx = Math.floor(Math.random() * 5)
-      let ry = Math.floor(Math.random() * 5)
-      if (game[bx][ry].isNeutral){
-        game[bx][ry].isNeutral = false;
-        game[bx][ry].isBlue = true
-        blue++
       }
     }
-    while (red < 9){
-      let rx = Math.floor(Math.random() * 5)
-      let ry = Math.floor(Math.random() * 5)
-      if (game[rx][ry].isNeutral){
-        game[rx][ry].isNeutral = false;
-        game[rx][ry].isRed = true
-        red++
-      }
-    }
-    return game.slice()
   }
+  game = game.reduce(function(prev, curr) {
+  return prev.concat(curr);
+});
+  return game
+}
+
+
+assignValues(game){
+    game[24].isAssassin = true
+    game[24].isNeutral= false
+    for (let i = 1; i < 8; i++){
+      game[i].isBlue= true
+      game[i].isNeutral= false
+      game[i + 10].isRed = true
+      game[i+10].isNeutral= false
+    }
+    if ((Math.floor(Math.random * 20) % 2) === 0){
+      game[0].isBlue = true;
+
+    }else{
+      game[0].isRed = true
+    }
+
+    return game
+  }
+
+
+
+shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+    [array[i], array[j]] = [array[j], array[i]]; // swap elements
+  }
+  return array
+}
+
 
   render() {
     let keyCounter = 0
-    let game = this.assignValues(this.initializeGame())
-    game = game.reduce(function(prev, curr) {
-      return prev.concat(curr);
-    });
+    let game = this.assignValues(this.initializeBoard())
+
     console.log(game[1])
     console.log(game[2])
     console.log(game[25])
@@ -94,8 +91,8 @@ class Game extends Component {
                   isRed={obj.isRed}
                   isBlue={obj.isBlue}
                   isAssassin={obj.isAssassin}
-                  isNeutral={obj.isNeautral}
-                  isRevealed={obj.false}
+                  isNeutral={obj.isNeutral}
+
                   />
               </GridColumn>
               )
