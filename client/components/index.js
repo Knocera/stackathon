@@ -10,4 +10,5 @@
 export {default as WordsView} from './WordsView'
 export {default as WordCard} from './WordCard'
 
+export {default as Game} from './Game'
 export {default as Navbar} from './Navbar'

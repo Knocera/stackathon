@@ -8,7 +8,9 @@ class WordsView extends Component {
   constructor() {
     super()
     this.state = {
-      x: 0
+      x: 0,
+
+
     }
   }
   componentDidMount() {

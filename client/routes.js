@@ -4,7 +4,7 @@ import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
 // import {Login, Signup, UserHome} from './components/bmFiles'
 import {me} from './store'
-import {WordsView, WordCard} from './components'
+import {WordsView, WordCard, Game} from './components'
 
 /**
  * COMPONENT
@@ -20,6 +20,7 @@ class Routes extends Component {
       <Switch>
 
         <Route path="/wordCard" component={WordCard} />
+        <Route path="/game" component={Game} />
         <Route path="/" component={WordsView} />
 
         <Route component={WordsView} />
