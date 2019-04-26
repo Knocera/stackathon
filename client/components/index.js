@@ -7,5 +7,7 @@
 // export {default as UserHome} from './bmfiles/user-home'
 // export {Login, Signup} from './bmfiles/auth-form'
 
-export {default as Homepage} from './Homepage'
+export {default as WordsView} from './WordsView'
 export {default as WordCard} from './WordCard'
+
+export {default as Navbar} from './Navbar'

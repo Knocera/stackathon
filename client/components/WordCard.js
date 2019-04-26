@@ -1,26 +1,20 @@
 import React, {Component} from 'react'
-import {Card} from 'semantic-ui-react'
+import {Card, Grid} from 'semantic-ui-react'
 
 
-class WordCard extends Component{
-  constructor(){
+class WordCard extends Component {
+  constructor() {
     super()
-    this.state = {}
-  }
-  render(){
+    }
+
+
+  render() {
     return (
-      <Card>
-        <Card.Content>
-          <Card.Header>RandomWord</Card.Header>
-        </Card.Content>
+      <Card id ='wordcard'>
+        <Card.Header  textAlign="center">{this.props.cardName ? this.props.cardName : 'PlaceHolder'}</Card.Header>
       </Card>
     )
-
-
   }
 }
-
-
-
 
 export default WordCard
