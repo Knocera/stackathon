@@ -6,18 +6,23 @@ class WordCard extends Component {
   constructor() {
     super()
     this.state={
-      isRevealed: false
+      revealed: false
     }
 
     this.revealCard = this.revealCard.bind(this)
     }
 
+  revealCard(){
+    console.log(this)
+    this.setState({revealed: true})
 
+
+  }
 
   render() {
+
     let cardColor = null
-    console.log(this)
-    if (this.props.isRevealed){
+    if (this.state.revealed){
       if (this.props.isRed){
         cardColor = "red"
       }else if(this.props.isBlue){

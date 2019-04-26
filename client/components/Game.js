@@ -73,10 +73,6 @@ shuffle(array) {
   render() {
     let keyCounter = 0
     let game = this.assignValues(this.initializeBoard())
-
-    console.log(game[1])
-    console.log(game[2])
-    console.log(game[25])
     return (
       <div>
         <Container>
