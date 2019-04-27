@@ -31,8 +31,8 @@ class Game{
       this.winner = 'blue'
     }
   }
-  flipCard(x){
-    let card = this.board[x]
+  flipCard(index){
+    let card = this.board[index]
     if (!card.flipped){
       let type = card.type
       card.flipped=true

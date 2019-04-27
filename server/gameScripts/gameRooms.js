@@ -2,12 +2,12 @@ const UUID = require('./node_modules/node-uuid')
 const GameEngine = require('./gameEngine')
 
 class GameRoom {
-  constructor(roomName, roomCode){
+  constructor(host, roomName, roomCode){
     this.roomName = roomName
     this.roomCode = roomCode
     this.players = {}
     this.game = new GameEngine()
-
+    this.host = host
     this.roomId = UUID()
 
     GameRoomList[this.roomName] = this

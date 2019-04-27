@@ -1,12 +1,12 @@
 
 
 class Player{
-  consturctor(username, room, socket){
+  consturctor(username, room, socket, team, role){
     this.id = socket.id
     this.username = username
     this.room = room
-    this.team = undefined
-    this.role = undefined
+    this.team = team
+    this.role = role
 
     PlayerList[this.id] = this
     PlayerCount++
