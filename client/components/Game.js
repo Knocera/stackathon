@@ -1,20 +1,34 @@
 import React, {Component} from 'react'
 import WordCard from './WordCard'
 import {Button, Container, Grid, GridColumn} from 'semantic-ui-react'
+import io from "socket.io-client"
 
 class Game extends Component {
   constructor() {
     super()
     this.state = {
-      isPlaying: false
-
+      isPlaying: false,
+      gameBoardWords: [],
+      cards: []
       // This can probably be stored in redux store
       // redCards: 9,
       // blueCards: 8,
       // assassin: false,
       // cardsRemaining: 25
     }
-  }
+  this.socket = io
+}
+
+componentDidMount(){
+  this.socket.open()
+}
+
+revealCard(){
+  console.log(this)
+
+
+
+}
 
 initializeBoard() {
     let game = []
@@ -69,10 +83,21 @@ shuffle(array) {
   return array
 }
 
+startGame(){
+  if (this.state.isPlaying){
+    console.log("The game has already started")
+  } else {
+    console.log("the game has begun")
+    this.setState({isPlaying: true})
+  }
+
+}
+
 
   render() {
     let keyCounter = 0
-    let game = this.assignValues(this.initializeBoard())
+    let game = this.shuffle(this.assignValues(this.initializeBoard()))
+
     return (
       <div>
         <Container>

@@ -1,14 +1,54 @@
 body {
-  font-family: sans-serif; }
-  body a {
-    text-decoration: none; }
-  body label {
-    display: block; }
-  body nav a {
-    display: inline-block;
-    margin: 1em; }
-  body form div {
-    margin: 1em;
-    display: inline-block; }
+  font-family: sans-serif;
+}
 
-/*# sourceMappingURL=style.css.map*/
+a {
+  text-decoration: none;
+}
+
+
+body > div,
+body > div > div,
+body > div > div > div.login-form {
+  height: 100%;
+}
+
+#navBar{
+  position: sticky;
+  margin: 0 0 100px 0;
+}
+
+#navbar {
+  display: flex;
+  flex-direction: row;
+}
+
+#navbar-title-and-image-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#nav-title{
+  width: 410px;
+  font-size: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#nav-image{
+  width: 75px;
+  justify-self: flex-start;
+}
+
+.nav-title-text {
+  font-family: serif;
+  font-style: italic;
+  font-size: 60px;
+}
+
+.nav-text {
+  font-size: 25px;
+}

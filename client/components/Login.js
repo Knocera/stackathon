@@ -8,7 +8,8 @@ import {
   Header,
   Image,
   Message,
-  Segment
+  Segment,
+  Container
 } from 'semantic-ui-react'
 import socket from '../socket'
 
@@ -18,51 +19,63 @@ class Login extends Component {
     this.state = {
       username: ''
     }
-    this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
-  onChange() {
-    this.setState({ })
-  }
-  handleSubmit() {
 
-
+  handleChange(event) {
     this.setState({
-      [event.target.username]: event.target.value
+      [event.target.name]: event.target.value
     })
-    const username = this.state.username
-    localStorage.setItem('username', username)
+  }
+
+  handleSubmit() {
+    const gamename = this.state.username
+    localStorage.setItem('username', JSON.stringify(gamename))
   }
 
   render() {
     return (
-      <Grid textAlign="center" style={{height: '100%'}} verticalAlign="middle">
+      <Container >
+
+      <Grid textAlign="center" style={{height: '100%'}} verticalAlign="middle" >
         <Grid.Column style={{maxWidth: 450}}>
           <h1>Code Names</h1>
 
           <h3>Welcome to Code Names Lkdjfldajkladjfldakjdfasdlkfjadlkf</h3>
-          <Form size="large">
-            <Segment stacked>
-              <Segment.Header>Choose your username</Segment.Header>
-              <Form.Input
+          <Form size="large" >
+            <Segment stacked >
+              <Header as="h2" color="teal" textAlign="center">
+                 Please create a new username for this session
+              </Header>
+              <Form.Input id='login-input'
+                onChange={this.handleChange}
                 fluid
                 icon="user"
-                name='username'
+                name="username"
                 iconPosition="left"
-                placeholder='username'
-                value=""
+                placeholder="username"
+                value={this.state.username}
               />
 
               <Link to="/Lobby">
-              <Button color="green" fluid size="large" onClick={this.handleSubmit}>
-                Submit
-              </Button>
+                <Button
+                  color="green"
+                  fluid
+                  size="large"
+                  onClick={this.handleSubmit}
+                >
+                  Submit
+                </Button>
               </Link>
             </Segment>
           </Form>
         </Grid.Column>
       </Grid>
+      </Container>
     )
   }
 }
+
+export default Login

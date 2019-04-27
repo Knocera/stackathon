@@ -1,17 +1,26 @@
-// import React, { Component } from 'react'
-// import {connect} from 'react-redux'
-// import {Link} from 'react-router-dom'
-// import {Menu, Icon, Dropdown, Image, Button} from 'semantic-ui-react'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
+import {Menu, Icon, Dropdown, Image, Button, Grid} from 'semantic-ui-react'
 
-// const Navbar = () => (
+const Navbar = () => (
+  <Grid doubling>
+    <Menu color="green" id="navBar" fixed="top">
+      <Menu.Item>
+        <Link className="nav-text" to="/Lobby">
+          Lobby
+        </Link>
+      </Menu.Item>
+      <Menu.Item>
+        <Link className="nav-text" to="/Game">
+          Game
+        </Link>
+      </Menu.Item>
+      <Menu.Item position='right' margin="10px">
+        <p>Your Username is: <strong>{localStorage.getItem('username')}</strong></p>
+      </Menu.Item>
+    </Menu>
+  </Grid>
+)
 
-//     <Menu color='blue' fixed='top'>
-//       <Menu.Items>
-//          <h1>CodeNames</h1>
-//       </Menu.Items>
-//     </Menu>
-
-
-// )
-
-// export default Navbar
+export default Navbar
