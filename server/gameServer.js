@@ -8,18 +8,18 @@ class GameServer {
     this.createGame = this.createGame.bind(this)
   }
 
-  createGameRoom = function(player) {
+  GameRoom(player) {
     let newGame = {
       id: UUID(),
-      host: player,
+      host: player.username,
       gameCode: 1234,
-      players: [player],
+      players: [player.username],
       playerCount: 1,
       isPlaying: false
     }
     player.isHost = true
-    player.game = newGame
-    player.id = JSON.parse(localStorage.getItem('userId')) //upon entering name create a unique Id in local storage
+    // player.game = newGame
+
 
     newGame.gameEngine = new GameEngine(newGame)
     this.games[newGame.id] = newGame
@@ -78,6 +78,8 @@ class GameServer {
   }
 
 }
+
+
 
 module.exports = {
   GameServer,

@@ -4,7 +4,7 @@ import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import {me} from './store'
-import {WordsView, WordCard, Game, Lobby, Login} from './components'
+import {WordsView, WordCard, Game, Lobby, Login, CreateGame} from './components'
 
 /**
  * COMPONENT

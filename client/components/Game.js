@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import WordCard from './WordCard'
 import {Button, Container, Grid, GridColumn} from 'semantic-ui-react'
-import io from "socket.io-client"
+import socket from '../socket'
 
 class Game extends Component {
   constructor() {
@@ -16,11 +16,11 @@ class Game extends Component {
       // assassin: false,
       // cardsRemaining: 25
     }
-  this.socket = io
+
 }
 
 componentDidMount(){
-  this.socket.open()
+
 }
 
 revealCard(){

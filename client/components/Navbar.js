@@ -16,8 +16,8 @@ const Navbar = () => (
           Game
         </Link>
       </Menu.Item>
-      <Menu.Item position='right' margin="10px">
-        <p>Your Username is: <strong>{localStorage.getItem('username')}</strong></p>
+      <Menu.Item position='right'margin="10px">
+        <p  as='h4' >Your Username is: <strong>{localStorage.getItem('username')}</strong></p>
       </Menu.Item>
     </Menu>
   </Grid>
