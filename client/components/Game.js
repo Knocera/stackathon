@@ -23,6 +23,10 @@ componentDidMount(){
 
 }
 
+grabWords(){
+
+}
+
 revealCard(){
   console.log(this)
 

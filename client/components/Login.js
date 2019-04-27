@@ -31,7 +31,8 @@ class Login extends Component {
   }
 
   handleSubmit() {
-    const gamename = this.state.username
+    let gamename = this.state.username
+    gamename.toLowerCase()
     localStorage.setItem('username', JSON.stringify(gamename))
   }
 

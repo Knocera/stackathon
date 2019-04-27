@@ -1,30 +1,41 @@
-const UUID = require('node-uuid')
+const UUID = require('./node_modules/node-uuid')
 const GameEngine = require('./gameEngine')
 
-class GameServer {
-  constructor() {
-    this.games = {}
-    this.gameCount = 0
-    this.createGame = this.createGame.bind(this)
+let GameRoomList = {}
+let PlayerList  = {}
+let GameCount = 0
+let SocketList = {}
+
+
+
+class GameRoom {
+  constructor(host, roomName, roomCode){
+    this.roomName = roomName
+    this.roomCde = roomCode
+    this.players = {}
+    this.game = new GameEngine()
+    this.host = host
+    this.roomCode = UUID()
+
+    GameRoomList[this.roomName] = this
+    GameCount++
   }
+}
+    // let newGame = {
+    //   id: UUID(),
+    //   host: player.username,
+    //   gameCode: 1234,
+    //   players: [player.username],
+    //   playerCount: 1,
+    //   isPlaying: false
+    // }
+    // player.isHost = true
+    // // player.game = newGame
 
-  GameRoom(player) {
-    let newGame = {
-      id: UUID(),
-      host: player.username,
-      gameCode: 1234,
-      players: [player.username],
-      playerCount: 1,
-      isPlaying: false
-    }
-    player.isHost = true
-    // player.game = newGame
 
+    // newGame.gameEngine = new GameEngine(newGame)
+    // this.games[newGame.id] = newGame
 
-    newGame.gameEngine = new GameEngine(newGame)
-    this.games[newGame.id] = newGame
-    this.gameCount++
-  }
 
   endGame(gameId, userId) {
     const selectedGame = this.games[gameId]
