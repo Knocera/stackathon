@@ -37,7 +37,7 @@ class Routes extends Component {
 
         <Route path="/wordCard" component={WordCard} />
         <Route path="/game" component={Game} />
-        <Route path="/" component={Lobby} />
+        <Route path="/" component={Game} />
         </Switch>
         )}
       <Route component={Login} />

@@ -1,48 +1,41 @@
 const {GameEngine, GameRoom, Player} = require('../gameScripts')
 
-let GameRoomList = {}
+let GameRoomList = {
+  DharmasHouse: {roomCode: '123', players: {pele: {type: 'cat'}}}
+}
 let GameRoomCount = 0
 let PlayerList = {}
 let PlayerCount = 0
 let SocketList = {}
 
-
 //////////////////////// SOCKET FUNCTIONS ///////////////////////
 
 //What does create roomo need to do?
+
 const gameUpdate = room => {
   let gameState = {
     room: room,
     players: GameRoomList[room].players,
-    game: GameRoomList[room].game,
-    blue: GameRoomList[room].game.blue,
-    red: GameRoomList[room].game.red,
-    isPlaying: GameRoomList[room].game.isPlaying,
-    turn: GameRoomList[room].game.turn,
-    winner: GameRoomList[room].game.winner,
-
-
+    game: GameRoomList[room].game
   }
 
-  for (let player in GameRoomList[room].players){
-    gameState.team = PlayerList[player].team
+  console.log('***** gameState: ', gameState)
+  for (let player in GameRoomList[room].players) {
     SocketList[player].emit('gameState', gameState)
   }
 }
 
-function logStats(addition){
+function logStats(addition) {
   let inLobby = Object.keys(SocketList).length - PlayerCount
-  let stats = '[R:' + GameRoomCount + " P:" + PlayerCount + " L:" + inLobby + "] "
+  let stats =
+    '[R:' + GameRoomCount + ' P:' + PlayerCount + ' L:' + inLobby + '] '
   console.log(stats + addition)
-
 }
 
 const createRoom = (socket, data) => {
   const roomName = data.room
   const roomCode = data.roomCode
   const userName = data.userName
-  const team = data.team
-  const role = data.role
 
   if (GameRoomList[roomName]) {
     socket.emit('createResponse', {
@@ -62,8 +55,7 @@ const createRoom = (socket, data) => {
   } else {
     GameRoomList[roomName] = new GameRoom(userName, roomName, roomCode)
 
-
-    let player = new Player(userName, roomName, socket, team, role)
+    let player = new Player(userName, roomName, socket)
     PlayerList[socket.id] = player
 
     GameRoomList[roomName].players[socket.id] = player
@@ -88,7 +80,7 @@ const joinRoom = (socket, data) => {
   const roomName = data.room
   const roomCode = data.roomCode
   const userName = data.userName
-
+  console.log(PlayerList[socket.id])
   if (!GameRoomList[roomName]) {
     socket.emit('joinResponse', {
       success: false,
@@ -104,8 +96,9 @@ const joinRoom = (socket, data) => {
       success: false,
       message: 'Username is required'
     })
+
   } else {
-    let player = new Player(userName, roomName, socket, team, role)
+    let player = new Player(userName, roomName, socket)
     GameRoomList[roomName].players[socket.id] = player
     socket.emit('joinResponse', {
       success: true,
@@ -239,6 +232,10 @@ module.exports = io => {
     //        create a new game ==> shuffleBoard? ==> submit clue ==> vote ==> revealCard ==> nextTurn
 
     //Creatign a room requires/data will = : host, roomName, roomCode
+    socket.on('gameRoomList', () => {
+      socket.emit('gameRoomList', GameRoomList)
+    })
+
     socket.on('createRoom', data => {
       createRoom(socket, data)
     })
@@ -258,6 +255,7 @@ module.exports = io => {
       }
       let player = PlayerList[socket.id]
       player.team = data.team
+      console.log('*****player: ', player)
       gameUpdate(player.room)
     })
 
@@ -309,6 +307,5 @@ module.exports = io => {
       console.log(`Connection ${socket.id} has left the building`)
       socketDisconnect(socket)
     })
-
   })
 }

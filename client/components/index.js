@@ -13,6 +13,7 @@ export {default as Login} from './Login'
 
 export {default as Lobby} from './Lobby'
 export {default as CreateGame} from './CreateGame'
+export {default as CreateRoom} from './CreateRoom'
 
 export {default as Game} from './Game'
 export {default as Navbar} from './Navbar'

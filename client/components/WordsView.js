@@ -21,7 +21,7 @@ class WordsView extends Component {
 
 
         <Grid celled columns={5}>
-          {this.props.props.game ? (
+          {this.props.props.game.board ? (
             this.props.props.game.board.map(obj => {
               keyCounter++
               return (

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import WordCard from './WordCard'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import {
   Button,
   Form,
@@ -31,9 +31,10 @@ class Login extends Component {
   }
 
   handleSubmit() {
-    let gamename = this.state.username
-    gamename.toLowerCase()
-    localStorage.setItem('username', JSON.stringify(gamename))
+    let username = this.state.username
+    username.toLowerCase()
+    localStorage.setItem('username', JSON.stringify(username))
+
   }
 
   render() {
@@ -60,7 +61,7 @@ class Login extends Component {
                 value={this.state.username}
               />
 
-              <Link to="/Lobby">
+              <Link to="/Game">
                 <Button
                   color="green"
                   fluid

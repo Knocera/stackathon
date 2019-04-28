@@ -1,38 +1,79 @@
 import React, {Component} from 'react'
-
-import {Button, Container, Grid, GridColumn} from 'semantic-ui-react'
+import CreateRoom from './CreateRoom'
+import {Redirect} from 'react-router-dom'
+import {Button, Container, Grid, Header, GridColumn} from 'semantic-ui-react'
 import socket from '../socket'
 import CreateGame from './CreateGame'
+import JoinRoom from './JoinRoom'
 
 class Lobby extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       createGame: false,
-      roomCode: null,
-      selectedRoom: null
+      createRoom: false,
+      joinRoom: false,
+      selectedRoom: "",
+      gameRoomList: {}
     }
     this.showCreateGame = this.showCreateGame.bind(this)
-    // this.createNewGame = this.createNewGame.bind(this)
+    this.showCreateRoom = this.showCreateRoom.bind(this)
+    this.showJoinRoom = this.showJoinRoom.bind(this)
+    // this.roomCreated = this.roomCreated.bind(this)
   }
 
   componentDidMount(){
+    socket.emit('gameRoomList')
+    socket.on('gameRoomList', data =>{
+      this.setState({gameRoomList: data})
+      console.log('thisstate', this.state)
+    })
+  }
+  showJoinRoom(event){
+    let room = event.target.name
+    this.setState(prevstate => ({joinRoom: !prevstate.joinRoom, selectedRoom: room, createRoom: false})
+    )
+    console.log(this.state)
+
   }
 
+  showCreateRoom() {
+    this.setState(prevstate => ({createRoom: !prevstate.createRoom, joinRoom: false}))
+  }
   showCreateGame() {
     this.setState(prevstate => ({createGame: !prevstate.createGame}))
   }
   render() {
     return (
-      <div>
         <div>
+        <Grid textAlign="center" style={{height: '100%'}} verticalAlign="middle">
+        <Grid.Column style={{maxWidth: 450}}>
           <h1>Code Names</h1>
           <h3>Game Lobby</h3>
           <p>Welcome to Code Names </p>
-          <Button onClick={this.showCreateGame}>Create New Game</Button>
-          {!this.state.createGame ? null : <CreateGame startGame={this.props.startGame}/>}
-        </div>
-        {/* <Button onClick={this.createNewGame}>Create New Game </Button> */}
+          <Header>Active Game Rooms</Header>
+          {Object.keys(this.state.gameRoomList).length ? Object.keys(this.state.gameRoomList).map(key=> {
+            return <button name={key} onClick={this.showJoinRoom}>{key}</button>
+          }): <p>There are no active games</p>}
+
+
+<br/>
+
+          <Button style={{margin: 20}} onClick={this.showCreateRoom}>Create a New Room</Button>
+<br/>
+
+
+          {/* Determine what to show on page : Create, Join or nothing */}
+          {!this.state.createRoom ? null : <CreateRoom createRoom={this.props.createRoom} addRedTeammate={this.props.addRedTeammate} addBlueTeammate={this.props.addBlueTeammate} state={this.props.state}/>}
+
+          {!this.state.joinRoom ? null : <JoinRoom handleJoinRoom={this.props.handleJoinRoom} name={this.state.selectedRoom} createRoom={this.props.createRoom} addRedTeammate={this.props.addRedTeammate} addBlueTeammate={this.props.addBlueTeammate} state={this.props.state} />}
+
+          {/* <Button onClick={this.showCreateGame}>Create New Game</Button> */}
+          {/* {!this.state.createGame || this.setState.createRoom ? null : <CreateGame createRoom={this.props.createRoom} addRedTeammate={this.props.addRedTeammate} addBlueTeammate={this.props.addBlueTeammate} state={this.props.state}/>} */}
+
+
+        </Grid.Column>
+        </Grid>
       </div>
     )
   }
