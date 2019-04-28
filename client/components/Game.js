@@ -39,13 +39,17 @@ class Game extends Component {
 
     return (
       <div>
-        <Login />
+        {/* If client hasnt saved a username to local storage show login form if not then show the lobby */}
+        {!localStorage.getItem('username') ? <Login /> : null}
 
-        <Lobby />
+        {localStorage.getItem('username') && !this.state.isPlaying ? <Lobby startGame={this.startGame}/> :  null }
 
-        <WordsView props={this.state} />
 
-        <Button onClick={this.startGame}>Start Game</Button>
+        {this.state.isPlaying ? <WordsView props={this.state} /> : null }
+
+
+
+
       </div>
     )
   }

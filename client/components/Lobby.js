@@ -30,9 +30,9 @@ class Lobby extends Component {
           <h3>Game Lobby</h3>
           <p>Welcome to Code Names </p>
           <Button onClick={this.showCreateGame}>Create New Game</Button>
-          {!this.state.createGame ? null : <CreateGame />}
+          {!this.state.createGame ? null : <CreateGame startGame={this.props.startGame}/>}
         </div>
-        <Button onClick={this.createNewGame}>Create New Game </Button>
+        {/* <Button onClick={this.createNewGame}>Create New Game </Button> */}
       </div>
     )
   }

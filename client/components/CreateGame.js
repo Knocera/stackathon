@@ -138,6 +138,7 @@ class CreateGame extends Component {
               </Grid.Column>
             </Grid>
           </Segment>
+            <Button onClick={this.props.startGame}>Start Game</Button>
         </Form>
       </div>
     )
