@@ -14,8 +14,10 @@ const gameUpdate = room => {
   let gameState = {
     room: room,
     players: GameRoomList[room].players,
-    game: GameRoomList[room].game
+    game: GameRoomList[room].game,
+
   }
+
   for (let player in GameRoomList[room].players){
     gameState.team = PlayerList[player].team
     SocketList[player].emit('gameState', gameState)
@@ -52,13 +54,19 @@ const createRoom = (socket, data) => {
       message: 'Username is required'
     })
   } else {
-    let gameRoom = new GameRoom(userName, roomName, roomCode)
-    let player = new Player(userName, gameRoom, socket, team, role)
+    GameRoomList[roomName] = new GameRoom(userName, roomName, roomCode)
+
+
+    let player = new Player(userName, roomName, socket, team, role)
+    PlayerList[socket.id] = player
+
     GameRoomList[roomName].players[socket.id] = player
+
     socket.emit('createResponse', {
       success: true,
       message: 'A new room has been made'
     })
+
     gameUpdate(roomName)
     logStats(
       socket.id +
@@ -97,7 +105,7 @@ const joinRoom = (socket, data) => {
       success: true,
       message: 'A user has joined the room'
     })
-    gameupdate(roomName)
+    gameUpdate(roomName)
     logStats(
       socket.id +
         `( ${player.userName} ) JOINED  |  ` +

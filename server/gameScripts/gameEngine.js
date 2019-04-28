@@ -1,4 +1,4 @@
-const words = require('./assets/defaultWords')
+const words = require('../assets/defaultWords')
 
 
 class Game{
@@ -11,12 +11,13 @@ class Game{
 
   }
   init(){
+    this.board = null
+    this.newBoard()
     let  turn   =  "blue"
     if (this.findType('red') > this.findType('blue')) turn =  'red'
     this.turn  =  turn
     this.isPlaying = true
     this.winner = null
-    this.board  =  this.newBoard()
   }
   checkWin(){
     this.red = this.findType('red')
@@ -54,9 +55,14 @@ class Game{
 
   findType(type){
     let counter = 0
-    this.board.forEach(index=>{
-      if (index.type === type && !index.flipped) counter++
-    })
+
+    for(let i = 0; i < 25; i++){
+      if (this.board[i].type === type && !this.board[i].flipped) {
+        counter++
+
+    }
+
+  }
     return counter
 
   }
@@ -75,6 +81,7 @@ initializeBoard() {
           x: i,
           y: j,
           word: null,
+          type: undefined,
           isRed: false,
           isBlue: false,
           isAssassin: false,
@@ -86,19 +93,26 @@ initializeBoard() {
   game = game.reduce(function(prev, curr) {
   return prev.concat(curr);
 });
-  game[24].isAssassin = true
-  game[24].isNeutral= false
-  for (let i = 1; i < 8; i++){
-    game[i].isBlue= true
-    game[i].isNeutral= false
-    game[i + 10].isRed = true
-    game[i+10].isNeutral= false
-  }
-  if ((Math.floor(Math.random * 20) % 2) === 0){
+game[24].isAssassin = true
+game[24].isNeutral= false
+for (let i = 1; i < 9; i++){
+  game[i].isBlue = true
+  game[i].type = 'blue'
+  game[i].isNeutral = false
+
+  game[i + 10].isRed = true
+  game[i + 10].type = 'red'
+  game[i+10].isNeutral = false
+}
+
+
+  if (Math.random() > 0.5){
     game[0].isBlue = true;
+    game[0].type = 'blue';
 
   }else{
     game[0].isRed = true
+    game[0].type = 'red';
   }
 
   return game
@@ -116,7 +130,7 @@ newBoard(){
   let foundWord  = null
   let usedWords = []
 
-  for(let i = 0;  i < this.board.length - 1;  i++){
+  for(let i = 0;  i < this.board.length;  i++){
     foundWord = this.words[Math.floor(Math.random() * this.words.length)]
     while (usedWords.includes(foundWord)){
       foundWord = this.words[Math.floor(Math.random() * this.words.length)]

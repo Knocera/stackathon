@@ -1,5 +1,8 @@
-const UUID = require('./node_modules/node-uuid')
+
 const GameEngine = require('./gameEngine')
+
+let GameRoomList = {}
+let GameRoomCount = 0
 
 class GameRoom {
   constructor(host, roomName, roomCode){
@@ -8,7 +11,6 @@ class GameRoom {
     this.players = {}
     this.game = new GameEngine()
     this.host = host
-    this.roomId = UUID()
 
     GameRoomList[this.roomName] = this
     GameRoomCount++

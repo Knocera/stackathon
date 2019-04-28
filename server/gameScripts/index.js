@@ -1,7 +1,7 @@
 // This serves as the serverside aggregate exports list for game files.
 
 const GameEngine = require('./gameEngine')
-const GameRoom = require('./gameRoom')
+const GameRoom = require('./gameRooms')
 const Player = require('./player')
 
 

@@ -5,18 +5,12 @@ import {Card, Grid, Header, Button} from 'semantic-ui-react'
 class WordCard extends Component {
   constructor() {
     super()
-    this.state={
-      revealed: false
-    }
-
     this.revealCard = this.revealCard.bind(this)
     }
 
   revealCard(){
     console.log(this)
     this.setState({revealed: true})
-
-
   }
 
   render() {
@@ -38,7 +32,7 @@ class WordCard extends Component {
     return (
 
       <Button onClick={this.revealCard} id ='wordcard' color={cardColor} >
-          <Header  textAlign="center">{this.props.cardName ? this.props.cardName : 'PlaceHolder'}</Header>
+          <Header  textAlign="center">{this.props.word}</Header>
       </Button>
 
 
