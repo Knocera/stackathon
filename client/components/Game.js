@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import WordsView from './WordsView'
+import {Login, Lobby, WordsView} from '../components'
 import {Button, Container, Grid, GridColumn} from 'semantic-ui-react'
 import socket from '../socket'
 
@@ -39,6 +39,10 @@ class Game extends Component {
 
     return (
       <div>
+        <Login />
+
+        <Lobby />
+
         <WordsView props={this.state} />
 
         <Button onClick={this.startGame}>Start Game</Button>

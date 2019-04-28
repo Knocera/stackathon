@@ -15,6 +15,12 @@ const gameUpdate = room => {
     room: room,
     players: GameRoomList[room].players,
     game: GameRoomList[room].game,
+    blue: GameRoomList[room].game.blue,
+    red: GameRoomList[room].game.red,
+    isPlaying: GameRoomList[room].game.isPlaying,
+    turn: GameRoomList[room].game.turn,
+    winner: GameRoomList[room].game.winner,
+
 
   }
 

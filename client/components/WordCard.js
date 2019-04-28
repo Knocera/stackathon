@@ -5,12 +5,18 @@ import {Card, Grid, Header, Button} from 'semantic-ui-react'
 class WordCard extends Component {
   constructor() {
     super()
+    this.state={
+      revealed: false
+    }
+
     this.revealCard = this.revealCard.bind(this)
     }
 
   revealCard(){
     console.log(this)
     this.setState({revealed: true})
+
+
   }
 
   render() {
