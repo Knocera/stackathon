@@ -175,212 +175,216 @@ class GameRoom {
 
 
 
-const gameUpdate = room => {
-  let gameState = {
-    room: room,
-    players: GameRoomList[room].players,
-    game: GameRoomList[room].game
-  }
+    const gameUpdate = room => {
+      let gameState = {
+        room: room,
+        players: GameRoomList[room].players,
+        game: GameRoomList[room].game
+      }
 
-  console.log('***** gameState: ', SocketList)
-  for (let player in GameRoomList[room].players) {
-    console.log('*****GameRoom.players: ', GameRoomList[room].players)
 
-    if (SocketList[player]) {
-      SocketList[player].emit('gameState', gameState)
+      for (let player in GameRoomList[room].players) {
+
+
+        if (SocketList[player]) {
+          SocketList[player].emit('gameState', gameState)
+        }
+      }
     }
-  }
-}
 
-function logStats(addition) {
-  let inLobby = Object.keys(SocketList).length - PlayerCount
-  let stats =
-    '[R:' + GameRoomCount + ' P:' + PlayerCount + ' L:' + inLobby + '] '
-  console.log(stats + addition)
-}
 
-const createRoom = (socket, data) => {
-  const roomName = data.room
-  // const roomCode = data.roomCode
-  const userName = data.userName
 
-  if (GameRoomList[roomName]) {
-    socket.emit('createResponse', {
-      success: false,
-      message: 'That room  name is taken'
-    })
-  } else if (roomName === '') {
-    socket.emit('createResponse', {
-      success: false,
-      message: 'Room name is required'
-    })
-  } else if (userName === '') {
-    socket.emit('createResponse', {
-      success: false,
-      message: 'Username is required'
-    })
-  } else {
-    GameRoomList[roomName] = new GameRoom(userName, roomName)
-    // removed Room code from GameRoom Args
-
-    let player = new Player(userName, roomName, socket)
-    PlayerList[socket.id] = player
-    player.joinTeam()
-    GameRoomList[roomName].players[socket.id] = player
-
-    socket.emit('createResponse', {
-      success: true,
-      message: 'A new room has been made'
-    })
-
-    gameUpdate(roomName)
-    logStats(
-      socket.id +
-        `( ${player.userName} ) CREATED  |  ` +
-        GameRoomList[player.room].room +
-        '  Players: ' +
-        Object.keys(GameRoomList[player.room].players).length
-    )
-  }
-}
-
-const joinRoom = (socket, data) => {
-  const roomName = data.room
-  // const roomCode = data.roomCode
-  const userName = data.userName
-  console.log(PlayerList[socket.id])
-  if (!GameRoomList[roomName]) {
-    socket.emit('joinResponse', {
-      success: false,
-      message: 'That room doesnt exist'
-    })
-    // } else if (GameRoomList[roomName].roomCode !== roomCode) {
-    //   socket.emit('joinResponse', {
-    //     success: false,
-    //     message: 'Incorrect room code'
-    //   })
-  } else if (userName === '') {
-    socket.emit('joinResponse', {
-      success: false,
-      message: 'Username is required'
-    })
-  } else {
-    let player = new Player(userName, roomName, socket)
-    GameRoomList[roomName].players[socket.id] = player
-    player.joinTeam()
-    socket.emit('joinResponse', {
-      success: true,
-      message: 'A user has joined the room'
-    })
-    gameUpdate(roomName)
-    logStats(
-      socket.id +
-        `( ${player.userName} ) JOINED  |  ` +
-        GameRoomList[player.room].room +
-        '  Players: ' +
-        Object.keys(GameRoomList[player.room].players).length
-    )
-  }
-}
-
-const leaveRoom = socket => {
-  const player = PlayerList[socket.id]
-  if (!player) {
-    return
-  }
-  delete PlayerList[player.id]
-  delete GameRoomList[player.room].players[player.id]
-  gameUpdate(player.room)
-  logStats(
-    socket.id +
-      `( ${player.userName} ) LEFT  |  ` +
-      GameRoomList[player.room].room +
-      '  Players: ' +
-      Object.keys(GameRoomList[player.room].players).length
-  )
-
-  if (Object.keys(GameRoomList[player.room].players).length < 1) {
-    delete GameRoomList[player.room]
-    logStats(`Deleted Room: ${player.room}`)
-  }
-  socket.emit('leaveResponse', {success: true})
-}
-
-const socketDisconnect = socket => {
-  const player = PlayerList[socket.id]
-  delete PlayerList[socket.id]
-  delete SocketList[socket.id]
-
-  if (player) {
-    delete GameRoomList[player.room].players[socket.id]
-    gameUpdate(player.room)
-    logStats(
-      socket.id +
-        `( ${player.userName} ) DISCONNECTED  |  ` +
-        GameRoomList[player.room].room +
-        '  Players: ' +
-        Object.keys(GameRoomList[player.room].players).length
-    )
-    if (Object.keys(GameRoomList[player.room].players).length < 1) {
-      delete GameRoomList[player.room]
-      logStats(`Deleted Room: ${player.room}`)
+    function logStats(addition) {
+      let inLobby = Object.keys(SocketList).length - PlayerCount
+      let stats =
+        '[R:' + GameRoomCount + ' P:' + PlayerCount + ' L:' + inLobby + '] '
+      console.log(stats + addition)
     }
-  }
-  logStats(`Disconnected:  ${socket.id}`)
-}
 
-const newGame = socket => {
-  if (!PlayerList[socket.id]) {
-    return
-  }
+    const createRoom = (socket, data) => {
+      const roomName = data.room
+      // const roomCode = data.roomCode
+      const userName = data.userName
 
-  let room = PlayerList[socket.id].room
+      if (GameRoomList[roomName]) {
+        socket.emit('createResponse', {
+          success: false,
+          message: 'That room  name is taken'
+        })
+      } else if (roomName === '') {
+        socket.emit('createResponse', {
+          success: false,
+          message: 'Room name is required'
+        })
+      } else if (userName === '') {
+        socket.emit('createResponse', {
+          success: false,
+          message: 'Username is required'
+        })
+      } else {
+        GameRoomList[roomName] = new GameRoom(userName, roomName)
+        // removed Room code from GameRoom Args
 
-  GameRoomList[room].game.init()
+        let player = new Player(userName, roomName, socket)
+        PlayerList[socket.id] = player
+        player.joinTeam()
+        GameRoomList[roomName].players[socket.id] = player
 
-  for (let player in GameRoomList[room].players) {
-    PlayerList[player].role = 'guesser'
-    SocketList[player].emit('chooseRoleResponse', {
-      success: true,
-      role: 'guesser'
-    })
-    SocketList[player].emit('newGameResponse', {success: true})
-  }
-  gameUpdate(room)
-}
+        socket.emit('createResponse', {
+          success: true,
+          message: 'A new room has been made'
+        })
 
-const chooseRole = (socket, data) => {
-  if (!PlayerList[socket.id]) {
-    return
-  }
-  let room = PlayerList[socket.id].room
+        gameUpdate(roomName)
+        logStats(
+          socket.id +
+            `( ${player.userName} ) CREATED  |  ` +
+            GameRoomList[player.room].room +
+            '  Players: ' +
+            Object.keys(GameRoomList[player.room].players).length
+        )
+      }
+    }
 
-  if (PlayerList[socket.id].team === undefined) {
-    socket.emit('chooseRoleResponse', {success: false})
-  } else {
-    PlayerList[socket.id].role = data.role
-    socket.emit('chooseRoleResponse', {success: true, role: data.role})
-    gameUpdate(room)
-  }
-}
+    const joinRoom = (socket, data) => {
+      const roomName = data.room
+      // const roomCode = data.roomCode
+      const userName = data.userName
+      console.log(PlayerList[socket.id])
+      if (!GameRoomList[roomName]) {
+        socket.emit('joinResponse', {
+          success: false,
+          message: 'That room doesnt exist'
+        })
+        // } else if (GameRoomList[roomName].roomCode !== roomCode) {
+        //   socket.emit('joinResponse', {
+        //     success: false,
+        //     message: 'Incorrect room code'
+        //   })
+      } else if (userName === '') {
+        socket.emit('joinResponse', {
+          success: false,
+          message: 'Username is required'
+        })
+      } else {
+        let player = new Player(userName, roomName, socket)
+        GameRoomList[roomName].players[socket.id] = player
+        player.joinTeam()
+        socket.emit('joinResponse', {
+          success: true,
+          message: 'A user has joined the room'
+        })
+        gameUpdate(roomName)
+        logStats(
+          socket.id +
+            `( ${player.userName} ) JOINED  |  ` +
+            GameRoomList[player.room].room +
+            '  Players: ' +
+            Object.keys(GameRoomList[player.room].players).length
+        )
+      }
+    }
 
-const clickedCard = (socket, data) => {
-  if (!PlayerList[socket.id]) {
-    return
-  }
-  let room = PlayerList[socket.id].room
+    const leaveRoom = socket => {
+      const player = PlayerList[socket.id]
+      if (!player) {
+        return
+      }
+      delete PlayerList[player.id]
+      delete GameRoomList[player.room].players[player.id]
+      gameUpdate(player.room)
+      logStats(
+        socket.id +
+          `( ${player.userName} ) LEFT  |  ` +
+          GameRoomList[player.room].room +
+          '  Players: ' +
+          Object.keys(GameRoomList[player.room].players).length
+      )
 
-  //check to see if it was that teams turn and  the game is still playing
-  if (
-    PlayerList[socket.id].team === GameRoomList[room].game.turn &&
-    GameRoomList[room].game.isPlaying
-  ) {
-    if (PlayerList[socket.id].role !== 'spyMaster') {
-      GameRoomList[room].game.flipTile(data.index)
+      if (Object.keys(GameRoomList[player.room].players).length < 1) {
+        delete GameRoomList[player.room]
+        logStats(`Deleted Room: ${player.room}`)
+      }
+      socket.emit('leaveResponse', {success: true})
+    }
+
+    const socketDisconnect = socket => {
+      const player = PlayerList[socket.id]
+      delete PlayerList[socket.id]
+      delete SocketList[socket.id]
+
+      if (player) {
+        delete GameRoomList[player.room].players[socket.id]
+        gameUpdate(player.room)
+        logStats(
+          socket.id +
+            `( ${player.userName} ) DISCONNECTED  |  ` +
+            GameRoomList[player.room].room +
+            '  Players: ' +
+            Object.keys(GameRoomList[player.room].players).length
+        )
+        if (Object.keys(GameRoomList[player.room].players).length < 1) {
+          delete GameRoomList[player.room]
+          logStats(`Deleted Room: ${player.room}`)
+        }
+      }
+      logStats(`Disconnected:  ${socket.id}`)
+    }
+
+    const newGame = socket => {
+      if (!PlayerList[socket.id]) {
+        return
+      }
+
+      let room = PlayerList[socket.id].room
+
+      GameRoomList[room].game.init()
+
+      for (let player in GameRoomList[room].players) {
+        PlayerList[player].role = 'guesser'
+        SocketList[player].emit('chooseRoleResponse', {
+          success: true,
+          role: 'guesser'
+        })
+        SocketList[player].emit('newGameResponse', {success: true})
+      }
       gameUpdate(room)
     }
-  }
-}
+
+    const chooseRole = (socket, data) => {
+      if (!PlayerList[socket.id]) {
+        return
+      }
+      let room = PlayerList[socket.id].room
+
+      if (PlayerList[socket.id].team === undefined) {
+        socket.emit('chooseRoleResponse', {success: false})
+      } else {
+        PlayerList[socket.id].role = data.role
+        socket.emit('chooseRoleResponse', {success: true, role: data.role})
+        gameUpdate(room)
+      }
+    }
+
+    const clickedCard = (socket, data) => {
+      if (!PlayerList[socket.id]) {
+        return
+      }
+      let room = PlayerList[socket.id].room
+
+      //check to see if it was that teams turn and  the game is still playing
+      if (
+        PlayerList[socket.id].team === GameRoomList[room].game.turn &&
+        GameRoomList[room].game.isPlaying
+      ) {
+        if (PlayerList[socket.id].role !== 'spyMaster') {
+          GameRoomList[room].game.flipTile(data.index)
+          gameUpdate(room)
+        }
+      }
+    }
+
+
 
 //potentially create action creator list for debgging purposes
 
@@ -390,10 +394,11 @@ module.exports = io => {
     SocketList[socket.id] = socket
     logStats('Connect: ' + socket.id)
 
-    socket.emit('serverInfo', {
+    io.emit('serverInfo', {
       Players: PlayerCount,
       GameRooms: GameRoomCount
     })
+
 
     //I tried to order these in the order they will be called when a user tries to create a new game
     //Events: Create gameroom ==> join the game room ==> join a team ==> select a role ==>
@@ -401,7 +406,7 @@ module.exports = io => {
 
     //Creatign a room requires/data will = : host, roomName, roomCode
     socket.on('gameRoomList', () => {
-      socket.emit('gameRoomList', GameRoomList)
+      io.emit('gameRoomList', GameRoomList)
     })
 
     socket.on('createRoom', data => {
@@ -475,5 +480,8 @@ module.exports = io => {
       console.log(`Connection ${socket.id} has left the building`)
       socketDisconnect(socket)
     })
+
+
+
   })
 }

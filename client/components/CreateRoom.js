@@ -1,27 +1,13 @@
 import React, {Component} from 'react'
 import socket from '../socket'
-import {Link} from 'react-router-dom'
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Image,
-  Message,
-  Segment,
-  Container,
-  Divider,
-  Fragment
-} from 'semantic-ui-react'
+import {Button, Form, Grid, Segment} from 'semantic-ui-react'
 
 class CreateRoom extends Component {
   constructor(props) {
     super(props)
     this.state = {
       room: '',
-      userName: localStorage.getItem('username'),
-      showTeam: false
-
+      userName: localStorage.getItem('username')
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleCreateRoom = this.handleCreateRoom.bind(this)
@@ -33,24 +19,19 @@ class CreateRoom extends Component {
     })
   }
 
-  addTeam(event){
+  addTeam(event) {
     this.setState({team: event.target.color})
-
   }
-
 
   handleCreateRoom() {
     console.log(this.state)
     socket.emit('createRoom', this.state)
-    this.setState(prevState=>({showTeam: !prevState.showTeam}))
     console.log('Handle Create Room Fired!')
   }
 
   render() {
-
     return (
       <div className="login-form">
-      {!this.state.showTeam ?
         <Grid
           textAlign="center"
           style={{height: '100%'}}
@@ -85,56 +66,14 @@ class CreateRoom extends Component {
                 </Form.Field> */}
                 <br />
 
-
-
-                      <Button onClick={this.handleCreateRoom}>
-                        Create Room
-                      </Button>
-
+                <Button onClick={this.handleCreateRoom}>Create Room</Button>
               </Segment>
             </Form>
           </Grid.Column>
         </Grid>
-        : null}
       </div>
     )
   }
 }
 
 export default CreateRoom
-        // <div>
-        //         <Grid columns={2}>
-        //           <Grid.Column>
-        //             <h4>Red Players:</h4>
-        //             {this.props.state.redTeam ? (
-        //               this.props.state.redTeam.map(player => {
-        //                 return <p>{player}</p>
-        //               })
-        //             ) : (
-        //               <p>No players have joined yet</p>
-        //             )}
-        //           </Grid.Column>
-        //           <Grid.Column>
-        //             <h4>Blue Players:</h4>
-        //             {this.props.state.blueTeam ? (
-        //               this.props.state.blueTeam.map(player => {
-        //                 return <p>{player}</p>
-        //               })
-        //             ) : (
-        //               <p>No players have joined yet</p>
-        //             )}
-        //           </Grid.Column>
-        //         </Grid>
-        //         <br/>
-
-        //           <Grid.Row>
-        //             <Button color="red" onClick={this.props.addRedTeammate}>
-        //               Join Red Team
-        //             </Button>
-        //             <Button color="blue" onClick={this.props.addBlueTeammate}>
-        //               Join Blue Team
-        //             </Button>
-        //           </Grid.Row>
-
-        //             </div> }
-

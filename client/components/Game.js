@@ -9,12 +9,14 @@ class Game extends Component {
     this.state = {
       game: {},
       players: {},
-      room: ''
+      room: '',
+      offlineMode: false
     }
     // this.createRoom = this.createRoom.bind(this)
-    this.addRedTeammate = this.addRedTeammate.bind(this)
-    this.addBlueTeammate = this.addBlueTeammate.bind(this)
+    this.startGame = this.startGame.bind(this)
     this.showState = this.showState.bind(this)
+    this.toggleOffline = this.toggleOffline.bind(this)
+    this.revealAll = this.revealAll.bind(this)
     // this.handleJoinRoom = this.handleJoinRoom.bind(this)
   }
 
@@ -33,51 +35,24 @@ class Game extends Component {
       this.setState(gameState)
     })
   }
-
+  toggleOffline() {
+    this.setState({offlineMode: true, isPlaying: true})
+    socket.emit('createRoom', {
+      room: 'offline',
+      userName: localStorage.getItem('username')
+    })
+    socket.emit('newGame')
+  }
   showState() {
     console.log(this.state)
   }
 
-  addRedTeammate() {
-    // let value = localStorage.getItem('username')
-    // value = value.slice(1, value.length - 1).toLowerCase()
-    // value = value[0].toUpperCase() + value.slice(1)
-    // if (
-    //   !this.state.blueTeam.includes(value) ||
-    //   !this.state.redTeam.includes(value)
-    //) {
-    //   this.setState(prevState => ({redTeam: [...prevState.redTeam, value]}))
-    //   console.log('in add teammate')
+  startGame() {
+    socket.emit('newGame')
 
-      socket.emit('joinTeam', {team: 'red'})
-
-      socket.on('gameState', gameState => {
-        this.setState(gameState)
-      })
-    // } else {
-    //   console.log('That user is already on a team')
-    // }
+    this.setState({isPlaying: true})
   }
-  addBlueTeammate() {
-    // let value = localStorage.getItem('username')
-    // value = value.slice(1, value.length - 1).toLowerCase()
-    // value = value[0].toUpperCase() + value.slice(1)
-    // if (
-    //   !this.state.blueTeam.includes(value) ||
-    //   !this.state.redTeam.includes(value)
-    // ) {
-      // this.setState(prevState => ({blueTeam: [...prevState.blueTeam, value]}))
-      // console.log('in add teammate')
 
-      socket.emit('joinTeam', {team: 'blue'})
-
-      socket.on('gameState', gameState => {
-        this.setState(gameState)
-      })
-    // } else {
-    //   console.log('That user is already on a team')
-    // }
-  }
   addSpyMaster(event) {
     event.preventDefault()
     let value = event.target.value
@@ -88,39 +63,50 @@ class Game extends Component {
     console.log(this.state)
   }
 
-  render() {
-    let keyCounter = 0
+  revealAll(){
+    let cards = this.state.game.board
+    let revealedCards = cards.map(index=> {
+      index.isRevealed  =  true
+      return index
+    })
+    this.setState({board: revealedCards})
+  }
 
+  render() {
     return (
       <div>
-        <Grid
-          textAlign="center"
-          style={{height: '100%'}}
-          verticalAlign="middle"
-        >
-          <Grid.Column>
-            <Button onClick={this.showState}>Show State</Button>
-            {/* If client hasnt saved a username to local storage show login form*/}
+        <Button onClick={this.toggleOffline}>Play Offline</Button>
+        {this.offlineMode ? (
+          <WordsView props={this.state} revealAll={this.revealAll} />
+        ) : (
+          <Grid
+            textAlign="center"
+            style={{height: '100%'}}
+            verticalAlign="middle"
+          >
+            <Grid.Column>
+              <Button onClick={this.showState}>Show State</Button>
+              {/* If client hasnt saved a username to local storage show login form*/}
 
-            {!localStorage.getItem('username') ? <Login /> : null}
+              {!localStorage.getItem('username') ? <Login /> : null}
 
-            {/* If client has signed in but is not playing, show the lobby */}
+              {/* If client has signed in but is not playing, show the lobby */}
 
-            {localStorage.getItem('username') && !this.state.isPlaying ? (
-              <Lobby
-                state={this.state}
-                createRoom={this.createRoom}
-                addBlueTeammate={this.addBlueTeammate}
-                addRedTeammate={this.addRedTeammate}
-                handleJoinRoom={this.handleJoinRoom}
-              />
-            ) : null}
+              {localStorage.getItem('username') && !this.state.isPlaying ? (
+                <Lobby
+                  state={this.state}
+                  createRoom={this.createRoom}
+                  addBlueTeammate={this.addBlueTeammate}
+                  addRedTeammate={this.addRedTeammate}
+                  handleJoinRoom={this.handleJoinRoom}
+                />
+              ) : null}
 
-            {/* If client is playing show the game*/}
 
-            {this.state.isPlaying ? <WordsView props={this.state} /> : null}
-          </Grid.Column>
-        </Grid>
+              {this.state.isPlaying ? <WordsView props={this.state} /> : null}
+            </Grid.Column>
+          </Grid>
+        )}
       </div>
     )
   }

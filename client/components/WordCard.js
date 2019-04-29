@@ -3,8 +3,8 @@ import {Card, Grid, Header, Button} from 'semantic-ui-react'
 
 
 class WordCard extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state={
       revealed: false
     }
@@ -20,9 +20,10 @@ class WordCard extends Component {
   }
 
   render() {
+   console.log('***** this.props in single card: ',  this.props);
 
     let cardColor = null
-    if (this.state.revealed){
+    if (this.state.revealed || this.props.revealed){
       if (this.props.isRed){
         cardColor = "red"
       }else if(this.props.isBlue){
@@ -37,8 +38,8 @@ class WordCard extends Component {
 
     return (
 
-      <Button onClick={this.revealCard} id ='wordcard' color={cardColor} >
-          <Header  textAlign="center">{this.props.word}</Header>
+      <Button  as='div' onClick={this.revealCard} id='card' color={cardColor} >
+          <h3 textAlign="center">{this.props.word}</h3>
       </Button>
 
 
