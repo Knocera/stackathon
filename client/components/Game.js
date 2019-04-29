@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Login, Lobby, WordsView} from '../components'
 import {Button, Container, Grid, GridColumn} from 'semantic-ui-react'
 import socket from '../socket'
+import RevealedWordView from './RevealedWordView'
 
 class Game extends Component {
   constructor() {
@@ -10,13 +11,15 @@ class Game extends Component {
       game: {},
       players: {},
       room: '',
-      offlineMode: false
+      offlineMode: false,
+      offlineSpymaster: false
     }
     // this.createRoom = this.createRoom.bind(this)
     this.startGame = this.startGame.bind(this)
     this.showState = this.showState.bind(this)
     this.toggleOffline = this.toggleOffline.bind(this)
     this.revealAll = this.revealAll.bind(this)
+    this.offlineSpymasterView = this.offlineSpymasterView.bind(this)
     // this.handleJoinRoom = this.handleJoinRoom.bind(this)
   }
 
@@ -30,9 +33,6 @@ class Game extends Component {
     socket.on('joinResponse', gameInfo => {
       console.log(gameInfo)
       this.setState(gameInfo)
-    })
-    socket.on('gameState', gameState => {
-      this.setState(gameState)
     })
   }
   toggleOffline() {
@@ -63,21 +63,31 @@ class Game extends Component {
     console.log(this.state)
   }
 
-  revealAll(){
+  revealAll() {
     let cards = this.state.game.board
-    let revealedCards = cards.map(index=> {
-      index.isRevealed  =  true
+    let revealedCards = cards.map(index => {
+      index.isRevealed = true
       return index
     })
     this.setState({board: revealedCards})
+  }
+
+  offlineSpymasterView() {
+    this.setState(prevState => ({offlineSpymaster: !prevState}))
   }
 
   render() {
     return (
       <div>
         <Button onClick={this.toggleOffline}>Play Offline</Button>
+        <Button onClick={this.offlineSpymasterView}>Spy Master View</Button>
         {this.offlineMode ? (
-          <WordsView props={this.state} revealAll={this.revealAll} />
+          <div>
+            <WordsView props={this.state} revealAll={this.revealAll} />
+            {/* {this.offlineSpymaster ? ( */}
+            <RevealedWordView props={this.state} />
+            {/* ) : null} */}
+          </div>
         ) : (
           <Grid
             textAlign="center"
@@ -101,7 +111,6 @@ class Game extends Component {
                   handleJoinRoom={this.handleJoinRoom}
                 />
               ) : null}
-
 
               {this.state.isPlaying ? <WordsView props={this.state} /> : null}
             </Grid.Column>

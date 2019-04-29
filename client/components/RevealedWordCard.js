@@ -2,11 +2,11 @@ import React, {Component} from 'react'
 import {Card, Grid, Header, Button} from 'semantic-ui-react'
 
 
-class WordCard extends Component {
+class RevealedWordCard extends Component {
   constructor(props) {
     super(props)
     this.state={
-      revealed: false
+      revealed: true
     }
 
     this.revealCard = this.revealCard.bind(this)
@@ -47,4 +47,4 @@ class WordCard extends Component {
   }
 }
 
-export default WordCard
+export default RevealedWordCard

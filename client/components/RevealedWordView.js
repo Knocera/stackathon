@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import WordCard from './WordCard'
+
 import RevealedWordCard from './revealedWordCard'
 import {Grid, Container, Card, Button, Header} from 'semantic-ui-react'
 
 
-class WordsView extends Component {
+class RevealedWordsView extends Component {
   constructor(props){
     super(props)
     this.state={
@@ -18,18 +19,18 @@ class WordsView extends Component {
 
   // eslint-disable-next-line complexity
   render() {
-    console.log('*****this.props Words View: ', this.props);
+    // console.log('*****this.props Words View: ', this.props);
     let keyCounter = 0
-    let cardColor = null
-      if (this.props.props.isRed){
-        cardColor = "red"
-      }else if(this.props.props.isBlue){
-        cardColor = "blue"
-      } else if(this.props.props.isAssassin){
-        cardColor = "yellow"
-      } else if(this.props.props.isNeutral){
-        cardColor = "grey"
-      }
+    // let cardColor = null
+    //   if (this.props.props.isRed){
+    //     cardColor = "red"
+    //   }else if(this.props.props.isBlue){
+    //     cardColor = "blue"
+    //   } else if(this.props.props.isAssassin){
+    //     cardColor = "yellow"
+    //   } else if(this.props.props.isNeutral){
+    //     cardColor = "grey"
+    //   }
 
     return (
       <Container>
@@ -42,40 +43,12 @@ class WordsView extends Component {
               <Header as='h3'>Remaining Blue Team Cards</Header>
               <Header>{this.props.props.game ? this.props.props.game.blue : 0}</Header>
             </Grid.Column>
-          </Grid> */}
-        {/* <Button onClick={this.spyMasterView}>SpyMaster</Button> */}
-  {/* {this.isSpymaster ? */}
+    </Grid> */}
+
+
         <Grid celled columns={5}>
-        {this.props.props.game.board ? (
-          this.props.props.game.board.map(obj => {
-            keyCounter++
-            return (
-              <Grid.Column key={keyCounter}>
-                <WordCard
-                  id="wordCard"
-                  cardNum={keyCounter}
-                  word={obj.word}
-                  isRed={obj.isRed}
-                  isBlue={obj.isBlue}
-                  isAssassin={obj.isAssassin}
-                  isNeutral={obj.isNeutral}
-                  isRevealed={obj.isRevealed}
 
-                />
-              </Grid.Column>
-            )
-          })
-        ) : (
-          <h1>Start a New Game</h1>
-        )}
-      </Grid>
-
-
-
-{/* : */}
-        {/* <Grid celled columns={5}>
-        {this.props.props.game.board ? (
-          this.props.props.game.board.map(obj => {
+          {this.props.props.game.board.map(obj => {
             keyCounter++
             return (
               <Grid.Column key={keyCounter}>
@@ -93,10 +66,8 @@ class WordsView extends Component {
               </Grid.Column>
             )
           })
-        ) : (
-          <h1>Start a New Game</h1>
-        )} */}
-      {/* </Grid> */}
+        }
+      </Grid>
 
 
 
@@ -109,4 +80,4 @@ class WordsView extends Component {
   }
 }
 
-export default WordsView
+export default RevealedWordsView
