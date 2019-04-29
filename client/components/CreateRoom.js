@@ -19,9 +19,8 @@ class CreateRoom extends Component {
     super(props)
     this.state = {
       room: '',
-      roomCode: '',
       userName: localStorage.getItem('username'),
-      team: undefined
+      showTeam: false
 
     }
     this.handleChange = this.handleChange.bind(this)
@@ -39,15 +38,19 @@ class CreateRoom extends Component {
 
   }
 
+
   handleCreateRoom() {
     console.log(this.state)
     socket.emit('createRoom', this.state)
+    this.setState(prevState=>({showTeam: !prevState.showTeam}))
     console.log('Handle Create Room Fired!')
   }
 
   render() {
+
     return (
       <div className="login-form">
+      {!this.state.showTeam ?
         <Grid
           textAlign="center"
           style={{height: '100%'}}
@@ -68,7 +71,7 @@ class CreateRoom extends Component {
                     onChange={this.handleChange}
                   />
                 </Form.Field>
-                <Form.Field>
+                {/* <Form.Field>
                   <label htmlFor="roomCode">
                     <h4>Room Code</h4>
                   </label>
@@ -79,56 +82,59 @@ class CreateRoom extends Component {
                     value={this.state.roomCode}
                     onChange={this.handleChange}
                   />
-                </Form.Field>
+                </Form.Field> */}
                 <br />
-                <Grid columns={2}>
-                  <Grid.Column>
-                    <h4>Red Players:</h4>
-                    {this.props.state.redTeam ? (
-                      this.props.state.redTeam.map(player => {
-                        return <p>{player}</p>
-                      })
-                    ) : (
-                      <p>No players have joined yet</p>
-                    )}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h4>Blue Players:</h4>
-                    {this.props.state.blueTeam ? (
-                      this.props.state.blueTeam.map(player => {
-                        return <p>{player}</p>
-                      })
-                    ) : (
-                      <p>No players have joined yet</p>
-                    )}
-                  </Grid.Column>
-                </Grid>
-                <br/>
-                <Grid.Row>
-                  <Grid.Row>
-                    <Button color="red" onClick={this.props.addRedTeammate}>
-                      Join Red Team
-                    </Button>
-                    <Button color="blue" onClick={this.props.addBlueTeammate}>
-                      Join Blue Team
-                    </Button>
-                  </Grid.Row>
-                  <Grid.Row>
-                    <br />
-                    <Link to="/Game">
+
+
+
                       <Button onClick={this.handleCreateRoom}>
                         Create Room
                       </Button>
-                    </Link>
-                  </Grid.Row>
-                </Grid.Row>
+
               </Segment>
             </Form>
           </Grid.Column>
         </Grid>
+        : null}
       </div>
     )
   }
 }
 
 export default CreateRoom
+        // <div>
+        //         <Grid columns={2}>
+        //           <Grid.Column>
+        //             <h4>Red Players:</h4>
+        //             {this.props.state.redTeam ? (
+        //               this.props.state.redTeam.map(player => {
+        //                 return <p>{player}</p>
+        //               })
+        //             ) : (
+        //               <p>No players have joined yet</p>
+        //             )}
+        //           </Grid.Column>
+        //           <Grid.Column>
+        //             <h4>Blue Players:</h4>
+        //             {this.props.state.blueTeam ? (
+        //               this.props.state.blueTeam.map(player => {
+        //                 return <p>{player}</p>
+        //               })
+        //             ) : (
+        //               <p>No players have joined yet</p>
+        //             )}
+        //           </Grid.Column>
+        //         </Grid>
+        //         <br/>
+
+        //           <Grid.Row>
+        //             <Button color="red" onClick={this.props.addRedTeammate}>
+        //               Join Red Team
+        //             </Button>
+        //             <Button color="blue" onClick={this.props.addBlueTeammate}>
+        //               Join Blue Team
+        //             </Button>
+        //           </Grid.Row>
+
+        //             </div> }
+

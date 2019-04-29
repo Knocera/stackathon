@@ -16,7 +16,7 @@ class Game{
     let  turn   =  "blue"
     if (this.findType('red') > this.findType('blue')) turn =  'red'
     this.turn  =  turn
-    this.isPlaying = true
+    this.isPlaying = false
     this.winner = null
   }
   checkWin(){

@@ -1,16 +1,179 @@
-const {GameEngine, GameRoom, Player} = require('../gameScripts')
+// const {GameEngine, GameRoom, Player} = require('../gameScripts')
+const words = require('../assets/defaultWords')
 
-let GameRoomList = {
-  DharmasHouse: {roomCode: '123', players: {pele: {type: 'cat'}}}
-}
+let GameRoomList = {}
 let GameRoomCount = 0
 let PlayerList = {}
 let PlayerCount = 0
 let SocketList = {}
 
+
+class GameEngine{
+  constructor() {
+    this.words = words
+
+    this.init()
+    this.red = this.findType('red')
+    this.blue = this.findType('blue')
+  }
+  init() {
+    this.board = null
+    this.newBoard()
+    let turn = 'blue'
+    if (this.findType('red') > this.findType('blue')) turn = 'red'
+    this.turn = turn
+    this.isPlaying = false
+    this.winner = null
+  }
+  checkWin() {
+    this.red = this.findType('red')
+    this.blue = this.findType('blue')
+
+    if (this.red === 0) {
+      this.isPlaying = false
+      this.winner = 'red'
+    }
+    if (this.blue === 0) {
+      this.playing = false
+      this.winner = 'blue'
+    }
+  }
+  flipCard(index) {
+    let card = this.board[index]
+    if (!card.flipped) {
+      let type = card.type
+      card.flipped = true
+
+      if (type === 'death') {
+        this.isPlaying = false
+        if (this.turn === 'blue') {
+          this.winner = 'red'
+        } else {
+          this.winner = 'blue'
+        }
+      } else if (type === 'neutral') this.nextTurn()
+      else if (type !== this.turn) this.nextTurn()
+      this.checkWin()
+    }
+  }
+
+  findType(type) {
+    let counter = 0
+
+    for (let i = 0; i < 25; i++) {
+      if (this.board[i].type === type && !this.board[i].flipped) {
+        counter++
+      }
+    }
+    return counter
+  }
+  nextTurn() {
+    if (this.turn === 'blue') this.turn = 'red'
+    else this.turn = 'blue'
+  }
+
+  initializeBoard() {
+    let game = []
+
+    for (let i = 0; i < 5; i++) {
+      game.push([])
+      for (let j = 0; j < 5; j++) {
+        game[i][j] = {
+          x: i,
+          y: j,
+          word: null,
+          type: undefined,
+          isRed: false,
+          isBlue: false,
+          isAssassin: false,
+          isNeutral: true,
+          isRevealed: false
+        }
+      }
+    }
+    game = game.reduce(function(prev, curr) {
+      return prev.concat(curr)
+    })
+    game[24].isAssassin = true
+    game[24].isNeutral = false
+    for (let i = 1; i < 9; i++) {
+      game[i].isBlue = true
+      game[i].type = 'blue'
+      game[i].isNeutral = false
+
+      game[i + 10].isRed = true
+      game[i + 10].type = 'red'
+      game[i + 10].isNeutral = false
+    }
+
+    if (Math.random() > 0.5) {
+      game[0].isBlue = true
+      game[0].type = 'blue'
+    } else {
+      game[0].isRed = true
+      game[0].type = 'red'
+    }
+
+    return game
+  }
+  shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)) // random index from 0 to i
+      ;[array[i], array[j]] = [array[j], array[i]] // swap elements
+    }
+    return array
+  }
+
+  newBoard() {
+    this.board = this.shuffle(this.initializeBoard())
+    let foundWord = null
+    let usedWords = []
+
+    for (let i = 0; i < this.board.length; i++) {
+      foundWord = this.words[Math.floor(Math.random() * this.words.length)]
+      while (usedWords.includes(foundWord)) {
+        foundWord = this.words[Math.floor(Math.random() * this.words.length)]
+      }
+      usedWords.push(foundWord)
+      this.board[i].word = foundWord
+    }
+    this.red = this.findType('red')
+    this.blue = this.findType('blue')
+  }
+}
+class Player {
+  constructor(username, room = {}, socket) {
+    this.id = socket.id
+    this.username = username
+    this.room = room
+    this.team = undefined
+    this.role = 'guesser'
+
+    PlayerCount = PlayerCount + 1
+    PlayerList[this.id] = this
+  }
+  joinTeam(){
+    let numInRoom = Object.keys(GameRoomList[this.room].players).length
+    if (numInRoom % 2 === 0) this.team = 'blue'
+    else this.team = 'red'
+  }
+}
+class GameRoom {
+  constructor(host, roomName) {
+    this.roomName = roomName
+    // this.roomCode = roomCode
+    this.players = {}
+    this.game = new GameEngine()
+    this.host = host
+
+    GameRoomList[this.roomName] = this
+    GameRoomCount++
+  }
+}
+
 //////////////////////// SOCKET FUNCTIONS ///////////////////////
 
-//What does create roomo need to do?
+
 
 const gameUpdate = room => {
   let gameState = {
@@ -19,9 +182,13 @@ const gameUpdate = room => {
     game: GameRoomList[room].game
   }
 
-  console.log('***** gameState: ', gameState)
+  console.log('***** gameState: ', SocketList)
   for (let player in GameRoomList[room].players) {
-    SocketList[player].emit('gameState', gameState)
+    console.log('*****GameRoom.players: ', GameRoomList[room].players)
+
+    if (SocketList[player]) {
+      SocketList[player].emit('gameState', gameState)
+    }
   }
 }
 
@@ -34,7 +201,7 @@ function logStats(addition) {
 
 const createRoom = (socket, data) => {
   const roomName = data.room
-  const roomCode = data.roomCode
+  // const roomCode = data.roomCode
   const userName = data.userName
 
   if (GameRoomList[roomName]) {
@@ -53,11 +220,12 @@ const createRoom = (socket, data) => {
       message: 'Username is required'
     })
   } else {
-    GameRoomList[roomName] = new GameRoom(userName, roomName, roomCode)
+    GameRoomList[roomName] = new GameRoom(userName, roomName)
+    // removed Room code from GameRoom Args
 
     let player = new Player(userName, roomName, socket)
     PlayerList[socket.id] = player
-
+    player.joinTeam()
     GameRoomList[roomName].players[socket.id] = player
 
     socket.emit('createResponse', {
@@ -78,7 +246,7 @@ const createRoom = (socket, data) => {
 
 const joinRoom = (socket, data) => {
   const roomName = data.room
-  const roomCode = data.roomCode
+  // const roomCode = data.roomCode
   const userName = data.userName
   console.log(PlayerList[socket.id])
   if (!GameRoomList[roomName]) {
@@ -86,20 +254,20 @@ const joinRoom = (socket, data) => {
       success: false,
       message: 'That room doesnt exist'
     })
-  } else if (GameRoomList[roomName].roomCode !== roomCode) {
-    socket.emit('joinResponse', {
-      success: false,
-      message: 'Incorrect room code'
-    })
+    // } else if (GameRoomList[roomName].roomCode !== roomCode) {
+    //   socket.emit('joinResponse', {
+    //     success: false,
+    //     message: 'Incorrect room code'
+    //   })
   } else if (userName === '') {
     socket.emit('joinResponse', {
       success: false,
       message: 'Username is required'
     })
-
   } else {
     let player = new Player(userName, roomName, socket)
     GameRoomList[roomName].players[socket.id] = player
+    player.joinTeam()
     socket.emit('joinResponse', {
       success: true,
       message: 'A user has joined the room'

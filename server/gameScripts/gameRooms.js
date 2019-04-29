@@ -5,9 +5,9 @@ let GameRoomList = {}
 let GameRoomCount = 0
 
 class GameRoom {
-  constructor(host, roomName, roomCode){
+  constructor(host, roomName){
     this.roomName = roomName
-    this.roomCode = roomCode
+    // this.roomCode = roomCode
     this.players = {}
     this.game = new GameEngine()
     this.host = host

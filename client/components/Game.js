@@ -7,20 +7,9 @@ class Game extends Component {
   constructor() {
     super()
     this.state = {
-      redTeam: [],
-      blueTeam: [],
-      blue: 0,
-      red: 0,
       game: {},
-      isPlaying: false,
       players: {},
-      room: '',
-      team: '',
-      turn: '',
-      winner: null,
-      roomCode: 123,
-
-
+      room: ''
     }
     // this.createRoom = this.createRoom.bind(this)
     this.addRedTeammate = this.addRedTeammate.bind(this)
@@ -45,47 +34,49 @@ class Game extends Component {
     })
   }
 
-
-  showState(){
+  showState() {
     console.log(this.state)
-
   }
-
-
 
   addRedTeammate() {
-    let value = localStorage.getItem('username')
-    value = value.slice(1, value.length - 1).toLowerCase()
-    value = value[0].toUpperCase() + value.slice(1)
-    if (!this.state.redTeam.includes(value) || !this.state.blueTeam.includes(value)){
+    // let value = localStorage.getItem('username')
+    // value = value.slice(1, value.length - 1).toLowerCase()
+    // value = value[0].toUpperCase() + value.slice(1)
+    // if (
+    //   !this.state.blueTeam.includes(value) ||
+    //   !this.state.redTeam.includes(value)
+    //) {
+    //   this.setState(prevState => ({redTeam: [...prevState.redTeam, value]}))
+    //   console.log('in add teammate')
 
-      this.setState(prevState => ({redTeam: [...prevState.redTeam, value]}))
-      console.log('in add teammate')
-    socket.emit('joinTeam', {team: 'red'})
+      socket.emit('joinTeam', {team: 'red'})
 
-    socket.on('gameState', gameState => {
-      this.setState(gameState)
-    })
-    } else {
-      console.log("That user is already on a team")
-    }
+      socket.on('gameState', gameState => {
+        this.setState(gameState)
+      })
+    // } else {
+    //   console.log('That user is already on a team')
+    // }
   }
   addBlueTeammate() {
-    let value = localStorage.getItem('username')
-    value = value.slice(1, value.length - 1).toLowerCase()
-    value = value[0].toUpperCase() + value.slice(1)
-    if (!this.state.blueTeam.includes(value) || !this.state.redTeam.includes(value)){
+    // let value = localStorage.getItem('username')
+    // value = value.slice(1, value.length - 1).toLowerCase()
+    // value = value[0].toUpperCase() + value.slice(1)
+    // if (
+    //   !this.state.blueTeam.includes(value) ||
+    //   !this.state.redTeam.includes(value)
+    // ) {
+      // this.setState(prevState => ({blueTeam: [...prevState.blueTeam, value]}))
+      // console.log('in add teammate')
 
-      this.setState(prevState => ({blueTeam: [...prevState.blueTeam, value]}))
-      console.log('in add teammate')
-    socket.emit('joinTeam', {team: 'blue'})
+      socket.emit('joinTeam', {team: 'blue'})
 
-    socket.on('gameState', gameState => {
-      this.setState(gameState)
-    })
-    } else {
-      console.log("That user is already on a team")
-    }
+      socket.on('gameState', gameState => {
+        this.setState(gameState)
+      })
+    // } else {
+    //   console.log('That user is already on a team')
+    // }
   }
   addSpyMaster(event) {
     event.preventDefault()
@@ -97,36 +88,38 @@ class Game extends Component {
     console.log(this.state)
   }
 
-
-
   render() {
     let keyCounter = 0
 
     return (
       <div>
-      <Grid textAlign="center" style={{height: '100%'}} verticalAlign="middle">
-      <Grid.Column>
-        <Button onClick={this.showState}>Show State</Button>
-        {/* If client hasnt saved a username to local storage show login form*/}
+        <Grid
+          textAlign="center"
+          style={{height: '100%'}}
+          verticalAlign="middle"
+        >
+          <Grid.Column>
+            <Button onClick={this.showState}>Show State</Button>
+            {/* If client hasnt saved a username to local storage show login form*/}
 
-        {!localStorage.getItem('username') ? <Login /> : null}
+            {!localStorage.getItem('username') ? <Login /> : null}
 
-        {/* If client has signed in but is not playing, show the lobby */}
+            {/* If client has signed in but is not playing, show the lobby */}
 
-        {localStorage.getItem('username') && !this.state.isPlaying ? (
-          <Lobby
-            state={this.state}
-            createRoom={this.createRoom}
-            addBlueTeammate={this.addBlueTeammate}
-            addRedTeammate={this.addRedTeammate}
-            handleJoinRoom={this.handleJoinRoom}
-          />
-        ) : null}
+            {localStorage.getItem('username') && !this.state.isPlaying ? (
+              <Lobby
+                state={this.state}
+                createRoom={this.createRoom}
+                addBlueTeammate={this.addBlueTeammate}
+                addRedTeammate={this.addRedTeammate}
+                handleJoinRoom={this.handleJoinRoom}
+              />
+            ) : null}
 
-        {/* If client is playing show the game*/}
+            {/* If client is playing show the game*/}
 
-        {this.state.isPlaying ? <WordsView props={this.state} /> : null}
-        </Grid.Column>
+            {this.state.isPlaying ? <WordsView props={this.state} /> : null}
+          </Grid.Column>
         </Grid>
       </div>
     )

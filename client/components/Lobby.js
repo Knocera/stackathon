@@ -18,7 +18,7 @@ class Lobby extends Component {
     }
     this.showCreateGame = this.showCreateGame.bind(this)
     this.showCreateRoom = this.showCreateRoom.bind(this)
-    this.showJoinRoom = this.showJoinRoom.bind(this)
+    this.joinRoom = this.joinRoom.bind(this)
     // this.roomCreated = this.roomCreated.bind(this)
   }
 
@@ -29,19 +29,28 @@ class Lobby extends Component {
       console.log('thisstate', this.state)
     })
   }
-  showJoinRoom(event){
-    let room = event.target.name
-    this.setState(prevstate => ({joinRoom: !prevstate.joinRoom, selectedRoom: room, createRoom: false})
-    )
-    console.log(this.state)
 
-  }
+
 
   showCreateRoom() {
     this.setState(prevstate => ({createRoom: !prevstate.createRoom, joinRoom: false}))
   }
   showCreateGame() {
     this.setState(prevstate => ({createGame: !prevstate.createGame}))
+  }
+  joinRoom(event){
+    let room = event.target.name
+  //   console.log('*****event.target: ', event.target);
+
+  //   console.log('*****event.target.name: ', event.target.name);
+  //   let name = localStorage.getItem('username')
+  //   if(name){
+
+  //     let state = {room: room, userName: name  }
+  //     socket.emit('joinRoom', state)
+  //   }
+    this.setState(prevstate => ({joinRoom: !prevstate.joinRoom, selectedRoom: room, createRoom: false})
+    )
   }
   render() {
     return (
@@ -53,7 +62,7 @@ class Lobby extends Component {
           <p>Welcome to Code Names </p>
           <Header>Active Game Rooms</Header>
           {Object.keys(this.state.gameRoomList).length ? Object.keys(this.state.gameRoomList).map(key=> {
-            return <button name={key} onClick={this.showJoinRoom}>{key}</button>
+            return <button name={key} onClick={this.joinRoom}>{key}</button>
           }): <p>There are no active games</p>}
 
 
@@ -66,7 +75,7 @@ class Lobby extends Component {
           {/* Determine what to show on page : Create, Join or nothing */}
           {!this.state.createRoom ? null : <CreateRoom createRoom={this.props.createRoom} addRedTeammate={this.props.addRedTeammate} addBlueTeammate={this.props.addBlueTeammate} state={this.props.state}/>}
 
-          {!this.state.joinRoom ? null : <JoinRoom handleJoinRoom={this.props.handleJoinRoom} name={this.state.selectedRoom} createRoom={this.props.createRoom} addRedTeammate={this.props.addRedTeammate} addBlueTeammate={this.props.addBlueTeammate} state={this.props.state} />}
+          {!this.state.joinRoom ? null : <JoinRoom  name={this.state.selectedRoom} createRoom={this.props.createRoom} addRedTeammate={this.props.addRedTeammate} addBlueTeammate={this.props.addBlueTeammate} state={this.props.state} />}
 
           {/* <Button onClick={this.showCreateGame}>Create New Game</Button> */}
           {/* {!this.state.createGame || this.setState.createRoom ? null : <CreateGame createRoom={this.props.createRoom} addRedTeammate={this.props.addRedTeammate} addBlueTeammate={this.props.addBlueTeammate} state={this.props.state}/>} */}
